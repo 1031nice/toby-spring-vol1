@@ -4,7 +4,7 @@ import me.donghun.tobyspringvol1.user.domain.User;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = getConnection();
@@ -40,14 +40,7 @@ public class UserDao {
         return user;
     }
 
-    // 중복된 코드를 분리
-    // 이제 연결 정보가 변한다해도 두려울 게 없다
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(
-                "jdbc:mysql://192.168.99.100:3306/springboot",
-                "donghun",
-                "pass");
-    }
+    // 서브 클래스에서 알아서 구현해서 쓰도록
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
 }
