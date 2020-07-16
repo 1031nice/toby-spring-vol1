@@ -8,8 +8,8 @@ public class UserDao {
 
     ConnectionMaker connectionMaker;
 
-    public UserDao() {
-        connectionMaker = new KakaoConnectionMaker(); // 클래스 이름이 나타난다
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
