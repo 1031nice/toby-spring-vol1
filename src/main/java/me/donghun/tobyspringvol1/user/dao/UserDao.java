@@ -6,19 +6,14 @@ import java.sql.*;
 
 public class UserDao {
 
-    // 상속의 한계를 극복하기 위해
-    // 아예 독립적인 클래스로 만들어 사용
-    // 근데 이렇게 하면 더이상 클라이언트가 DB connection 기능 확장해서 사용할 수 없게 된다
-    // UserDao의 코드가 SimpleConnectionMaker라는 특정 클래스에 종속되버리기 때문에
-    // UserDao 코드의 수정 없이 DB connection 생성 기능을 변경할 방법이 없다.
-    SimpleConnectionMaker simpleConnectionMaker;
+    ConnectionMaker connectionMaker;
 
-    public UserDao(SimpleConnectionMaker simpleConnectionMaker) {
-        this.simpleConnectionMaker = simpleConnectionMaker;
+    public UserDao() {
+        connectionMaker = new KakaoConnectionMaker(); // 클래스 이름이 나타난다
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -32,7 +27,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
