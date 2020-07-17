@@ -119,3 +119,12 @@ UserDao의 세부 전략이라고도 볼 수 있는 ConnectionMaker의 구현 �
 클라이언트에서 ConnectionMaker 구현 클래스를 정하고 객체를 생성하여 UserDao의 생성자에 전달하게 수정하였다.
 이제 UserDao의 생성자는 ConnectionMaker 인터페이스를 구현했다면
 어떤 클래스로 만든 오브젝트라도 상관도 없고 관심도 없다.
+
+20.7.17.
+얼렁뚱땅 넘긴 게 하나 있다. 클라이언트인 UserDaoTest이다.
+UserDaoTest는 UserDao 기능이 잘 동작하는지 테스트하려고 만든 것이다.
+근데 지금은 어떤 ConnectionMaker 구현 클래스를 사용할지 결정하는 책임까지 떠맡았으니 뭔가 문제가 있다.
+성격이 다른 책임이나 관심사는 지금껏 분리해왔기 때문이다. 이것도 분리하자.
+분리시킬 기능을 담당할 클래스 DaoFactory를 만들자.
+이로써 애플리케이션 컴포넌트 역할을 하는 객체(클라이언트, UserDao, ConnectionMaker)와
+애플리케이션 구조를 결정하는 객체(DaoFactory)가 분리되었다.
