@@ -128,3 +128,15 @@ UserDaoTest는 UserDao 기능이 잘 동작하는지 테스트하려고 만든 �
 분리시킬 기능을 담당할 클래스 DaoFactory를 만들자.
 이로써 애플리케이션 컴포넌트 역할을 하는 객체(클라이언트, UserDao, ConnectionMaker)와
 애플리케이션 구조를 결정하는 객체(DaoFactory)가 분리되었다.
+
+20.7.19.
+DaoFactory를 좀 더 살펴보자.
+DaoFactory에 UserDao가 아닌 다른 DAO의 생성 기능을 넣고 싶다.
+AccountDao, MessageDao 등..
+근데 userDao() 메소드를 복사해서 accountDao(), messageDao() 메소드로 만들면
+ConnectionMaker 구현 클래스의 객체를 생성하는 코드가 메소드마다 반복된다.
+(어떤 ConnectionMaker 구현 클래스를 사용할지 결정하는 기능이 중복돼서 나타난다.)
+이럴 경우 DAO가 더 많아지면 ConnectionMaker의 구현 클래스를 바꿀 때마다
+모든 메소드를 일일이 수정해야 한다.
+ConnectionMaker 구현 클래스의 객체를 생성하는 코드를
+connectionMaker()라는 이름의 메소드로 뽑아내자.
