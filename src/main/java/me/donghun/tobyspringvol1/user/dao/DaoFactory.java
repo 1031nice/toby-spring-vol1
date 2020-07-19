@@ -1,20 +1,18 @@
 package me.donghun.tobyspringvol1.user.dao;
 
-// UserDao의 생성 책임을 맡은 팩토리 메소드
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+// application context가 사용할 설정정보
+@Configuration
 public class DaoFactory {
 
+    @Bean // 객체 생성을 담당하는 IoC용 메소드라는 표시
     public UserDao userDao(){
         return new UserDao(connectionMaker());
     }
 
-    public AccountDao accountDao(){
-        return new AccountDao(connectionMaker());
-    }
-
-    public MessageDao messageDao(){
-        return new MessageDao(connectionMaker());
-    }
-    
+    @Bean
     public ConnectionMaker connectionMaker(){
         return new KakaoConnectionMaker();
     }
