@@ -8,7 +8,9 @@ public class UserDao {
 
     ConnectionMaker connectionMaker;
 
-    public UserDao(ConnectionMaker connectionMaker) {
+    public UserDao() {}
+
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 

@@ -1,0 +1,9 @@
+docker run -p 3306:3306 --name mysql_boot -e MYSQL_ROOT_PASSWORD=1 -e MYSQL_DATABASE=springboot -e MYSQL_USER=donghun -e MYSQL_PASSWORD=pass -d mysql
+docker exec -i -t mysql_boot bash
+mysql -u donghun -p
+
+create table users(
+    id varchar(10) primary key,
+    name varchar(20) not null,
+    password varchar(10) not null
+);
