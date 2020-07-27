@@ -17,19 +17,24 @@ public class UserDaoTest {
     public void andAndGet() throws SQLException, ClassNotFoundException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao dao = new DaoFactory().userDao();
+        User user1 = new User("user1", "name1", "pass1");
+        User user2 = new User("user2", "name2", "pass2");
 
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
-        User user = new User("donghun", "강동훈", "1031");
+        dao.add(user1);
+        dao.add(user2);
+        assertThat(dao.getCount(), is(2));
 
-        dao.add(user);
-        assertThat(dao.getCount(), is(1));
+        User userget1 = dao.get(user1.getId());
+        assertThat(user1.getName(), is(userget1.getName()));
+        assertThat(user1.getPassword(), is(userget1.getPassword()));
 
-        User user2 = dao.get(user.getId());
+        User userget2 = dao.get(user2.getId());
+        assertThat(user2.getName(), is(userget2.getName()));
+        assertThat(user2.getPassword(), is(userget2.getPassword()));
 
-        assertThat(user2.getName(), is(user.getName()));
-        assertThat(user2.getPassword(), is(user.getPassword()));
     }
 
     @Test
