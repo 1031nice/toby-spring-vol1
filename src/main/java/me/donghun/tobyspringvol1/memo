@@ -213,3 +213,6 @@ getCount()에 대한 더 꼼꼼한 테스트를 만들어보자.
 getCount()를 위한 새로운 테스트 메소드를 작성하도록 한다.
 
 addAndGet() 테스트를 보완해보자.
+
+UserDao의 get()에 존재하지 않는 user id가 전달된 경우를 처리해보자.
+스프링의 EmptyResultDataAccessException 예외를 이용한다.
