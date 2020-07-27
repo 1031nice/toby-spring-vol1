@@ -16,16 +16,12 @@ public class UserDaoTest {
     @Test
     public void andAndGet() throws SQLException, ClassNotFoundException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
         UserDao dao = new DaoFactory().userDao();
 
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
-        User user = new User();
-        user.setId("donghun");
-        user.setName("강동훈");
-        user.setPassword("1031");
+        User user = new User("donghun", "강동훈", "1031");
 
         dao.add(user);
         assertThat(dao.getCount(), is(1));
@@ -34,5 +30,28 @@ public class UserDaoTest {
 
         assertThat(user2.getName(), is(user.getName()));
         assertThat(user2.getPassword(), is(user.getPassword()));
+    }
+
+    @Test
+    public void count() throws SQLException, ClassNotFoundException {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        UserDao dao = new DaoFactory().userDao();
+
+        User user1 = new User("id1", "user1", "pass1");
+        User user2 = new User("id2", "user2", "pass2");
+        User user3 = new User("id3", "user3", "pass3");
+
+        dao.deleteAll();
+        assertThat(dao.getCount(), is(0));
+
+        dao.add(user1);
+        assertThat(dao.getCount(), is(1));
+
+        dao.add(user2);
+        assertThat(dao.getCount(), is(2));
+
+        dao.add(user3);
+        assertThat(dao.getCount(), is(3));
     }
 }
