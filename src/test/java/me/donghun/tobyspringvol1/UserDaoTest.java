@@ -16,6 +16,9 @@ import static org.junit.Assert.*;
 public class UserDaoTest {
 
     private UserDao dao;
+    private User user1;
+    private User user2;
+    private User user3;
 
     /*
     JUnit은 @Test가 붙은 메소드를 실행하기 전과 후에 각각
@@ -25,6 +28,10 @@ public class UserDaoTest {
     public void setUp(){
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         this.dao = context.getBean("userDao", UserDao.class);
+
+        this.user1 = new User("user1", "name1", "pass1");
+        this.user2 = new User("user2", "name2", "pass2");
+        this.user3 = new User("user3", "name3", "pass3");
     }
 
     /*
@@ -34,9 +41,6 @@ public class UserDaoTest {
      */
     @Test
     public void andAndGet() throws SQLException, ClassNotFoundException {
-        User user1 = new User("user1", "name1", "pass1");
-        User user2 = new User("user2", "name2", "pass2");
-
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
@@ -56,10 +60,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException, ClassNotFoundException {
-        User user1 = new User("id1", "user1", "pass1");
-        User user2 = new User("id2", "user2", "pass2");
-        User user3 = new User("id3", "user3", "pass3");
-
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
