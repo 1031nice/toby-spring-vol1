@@ -17,43 +17,60 @@ public class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+        try(Connection c = dataSource.getConnection();
+            PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)"))
+        {
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            ps.executeUpdate();
+        }
     }
+
+//    public User get(String id) throws ClassNotFoundException, SQLException {
+//        Connection c = dataSource.getConnection();
+//
+//        PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
+//        ps.setString(1, id);
+//
+//        ResultSet rs = ps.executeQuery();
+//
+//        User user = null;
+//        if(rs.next()) {
+//            user = new User();
+//            user.setId(rs.getString("id"));
+//            user.setName(rs.getString("name"));
+//            user.setPassword(rs.getString("password"));
+//        }
+//
+//        rs.close();
+//        ps.close();
+//        c.close();
+//
+//        if(user == null) throw new EmptyResultDataAccessException(1);
+//
+//        return user;
+//    }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
-        ps.setString(1, id);
-
-        ResultSet rs = ps.executeQuery();
-
-        User user = null;
-        if(rs.next()) {
-            user = new User();
-            user.setId(rs.getString("id"));
-            user.setName(rs.getString("name"));
-            user.setPassword(rs.getString("password"));
+        try(Connection c = dataSource.getConnection();
+            PreparedStatement ps = c.prepareStatement("select * from users where id = ?"))
+        {
+            ps.setString(1, id);
+            try(ResultSet rs = ps.executeQuery()) {
+                User user = null;
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(rs.getString("id"));
+                    user.setName(rs.getString("name"));
+                    user.setPassword(rs.getString("password"));
+                }
+                if (user == null) throw new EmptyResultDataAccessException(1);
+                return user;
+            }
         }
-
-        rs.close();
-        ps.close();
-        c.close();
-
-        if(user == null) throw new EmptyResultDataAccessException(1);
-
-        return user;
     }
+
     
     public void deleteAll() throws SQLException{
         try(Connection c = dataSource.getConnection();

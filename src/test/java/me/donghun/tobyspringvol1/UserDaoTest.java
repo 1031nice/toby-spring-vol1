@@ -25,6 +25,7 @@ public class UserDaoTest {
     @Autowired
     private ApplicationContext context;
 
+    @Autowired
     private UserDao dao;
     private User user1;
     private User user2;
@@ -38,7 +39,6 @@ public class UserDaoTest {
     public void setUp(){
         System.out.println(this.context); // context는 항상 동일
         System.out.println(this); // UserDaoTest 객체는 매번 다름
-        this.dao = context.getBean("userDao", UserDao.class);
         this.user1 = new User("user1", "name1", "pass1");
         this.user2 = new User("user2", "name2", "pass2");
         this.user3 = new User("user3", "name3", "pass3");
