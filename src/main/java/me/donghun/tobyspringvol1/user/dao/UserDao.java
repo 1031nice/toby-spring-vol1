@@ -73,10 +73,12 @@ public abstract class UserDao {
 
     
     public void deleteAll() throws SQLException{
-        try(Connection c = dataSource.getConnection();
-            PreparedStatement ps = makeStatement(c))
+        try(Connection c = dataSource.getConnection())
         {
-            ps.executeUpdate();
+            StatementStrategy strategy = new DeleteAllStatement();
+            try(PreparedStatement ps = strategy.makePreparedStatement(c)) {
+                ps.executeUpdate();
+            }
         }
     }
 
