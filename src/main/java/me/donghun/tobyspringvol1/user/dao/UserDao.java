@@ -73,10 +73,14 @@ public abstract class UserDao {
 
     
     public void deleteAll() throws SQLException{
+        StatementStrategy st = new DeleteAllStatement(); // deleteAll이 클라이언트
+        jdbcContextWithStatementStrategy(st);
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
         try(Connection c = dataSource.getConnection())
         {
-            StatementStrategy strategy = new DeleteAllStatement();
-            try(PreparedStatement ps = strategy.makePreparedStatement(c)) {
+            try(PreparedStatement ps = stmt.makePreparedStatement(c)) {
                 ps.executeUpdate();
             }
         }
