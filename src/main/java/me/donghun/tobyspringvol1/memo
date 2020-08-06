@@ -317,3 +317,6 @@ StatementStrategy 전략 클래스를 매번 독립된 파일로 만들지 말�
 UserDao 클래스 안에 내부 클래스로 정의하자.
 DeleteAllStatement나 AddStatement 모두 UserDao에서만 사용되고,
 UserDao의 메소드 로직에 강하게 결합되어 있다.
+
+익명 내부 클래스로 바꿔보자.
+

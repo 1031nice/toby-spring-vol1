@@ -18,18 +18,17 @@ public class UserDao {
 
     // 내부 클래스에서 외부의 변수를 사용할 때는 외부 변수가 (유사)final이어야 한다
     public void add(final User user) throws ClassNotFoundException, SQLException {
-        class AddStatement implements StatementStrategy {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-                return ps;
+        jdbcContextWithStatementStrategy(
+                new StatementStrategy() {
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+                        ps.setString(1, user.getId());
+                        ps.setString(2, user.getName());
+                        ps.setString(3, user.getPassword());
+                        return ps;
+                    }
             }
-        }
-        StatementStrategy st = new AddStatement();
-        jdbcContextWithStatementStrategy(st);
+        );
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -53,8 +52,14 @@ public class UserDao {
 
     
     public void deleteAll() throws SQLException{
-        StatementStrategy st = new DeleteAllStatement(); // deleteAll이 클라이언트
-        jdbcContextWithStatementStrategy(st);
+        jdbcContextWithStatementStrategy(
+                new StatementStrategy() {
+                    @Override
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        return c.prepareStatement("delete from users");
+                    }
+                }
+        );
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
