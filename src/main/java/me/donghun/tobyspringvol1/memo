@@ -306,3 +306,14 @@ DeleteAllStatement도 직접 알고 있다는건 전략 패턴에도, OCP에도 
 클라이언트는 전략 클래스 객체를 컨텍스트 메소드로 전달해야 한다.
 
 이번엔 add() 메소드에도 적용해보자.
+
+20.8.6.
+좀 더 개선할 부분을 찾아보자.
+1. DAO 메소드마다 새로운 StatementStrategy 구현 클래스를 만들어야 한다.
+2. DAO 메소드에서 StatementStrategy에 전달할 User와 같은 부가적 정보가 있는 경우
+이를 위해 객체를 전달받는 생성자와 이를 저장해둘 인스턴스 변수가 필요하다.
+
+StatementStrategy 전략 클래스를 매번 독립된 파일로 만들지 말고
+UserDao 클래스 안에 내부 클래스로 정의하자.
+DeleteAllStatement나 AddStatement 모두 UserDao에서만 사용되고,
+UserDao의 메소드 로직에 강하게 결합되어 있다.
