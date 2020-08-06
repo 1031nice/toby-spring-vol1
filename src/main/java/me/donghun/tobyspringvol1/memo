@@ -320,3 +320,9 @@ UserDao의 메소드 로직에 강하게 결합되어 있다.
 
 익명 내부 클래스로 바꿔보자.
 
+UserDao의 메소드가 클라이언트이고,
+익명 내부 클래스가 개별적인 전략이고,
+jdbcContextWithStatementStrategy() 메소드가 컨텍스트이다.
+jdbcContextWithStatementStrategy()는 일반적인 작업 흐름을 담고 있어서
+다른 DAO에서도 사용가능하므로 UserDao 클래스 밖으로 독립시켜서 모든 DAO가 사용할 수 있게 하자.
+
