@@ -1,11 +1,13 @@
 package me.donghun.tobyspringvol1.templateExam;
 
+import org.assertj.core.api.AbstractBigIntegerAssert;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class Calculator {
-    public Integer calSum(String filepath) throws IOException {
+    public Integer calcSum(String filepath) throws IOException {
         BufferedReaderCallback sumCallback = new BufferedReaderCallback() {
             @Override
             public Integer doSomethingWithReader(BufferedReader br) throws IOException {
@@ -17,6 +19,20 @@ public class Calculator {
             }
         };
         return fileReadTemplate(filepath, sumCallback);
+    }
+
+    public Integer calcMultiply(String filepath) throws IOException {
+        BufferedReaderCallback multiplyCallback = new BufferedReaderCallback() {
+            @Override
+            public Integer doSomethingWithReader(BufferedReader br) throws IOException {
+                Integer multiply = 1;
+                String line = null;
+                while ((line = br.readLine()) != null)
+                    multiply *= Integer.valueOf(line);
+                return multiply;
+            }
+        };
+        return fileReadTemplate(filepath, multiplyCallback);
     }
 
     public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException {
@@ -37,4 +53,5 @@ public class Calculator {
             }
         }
     }
+
 }
