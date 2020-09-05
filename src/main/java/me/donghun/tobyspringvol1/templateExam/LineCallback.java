@@ -1,7 +1,7 @@
 package me.donghun.tobyspringvol1.templateExam;
 
-public interface LineCallback {
+public interface LineCallback<T> {
 
-    Integer doSomethingWithLine(String line, Integer value);
+    T doSomethingWithLine(String line, T value);
 
 }
