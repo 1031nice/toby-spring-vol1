@@ -6,20 +6,34 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 public class UserDao {
 
-    private DataSource dataSource;
+//    private DataSource dataSource;
+//    private JdbcContext jdbcContext;
     private JdbcTemplate jdbcTemplate;
+    private RowMapper<User> userMapper =
+        new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                User user = new User();
+                user.setId(resultSet.getString("id"));
+                user.setName(resultSet.getString("name"));
+                user.setId(resultSet.getString("password"));
+                return user;
+            }
+        };
 
     public UserDao() {}
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.dataSource = dataSource;
+//        this.dataSource = dataSource;
     }
 
     // 내부 클래스에서 외부의 변수를 사용할 때는 외부 변수가 (유사)final이어야 한다
@@ -42,23 +56,33 @@ public class UserDao {
                 user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
-        try(Connection c = dataSource.getConnection();
-            PreparedStatement ps = c.prepareStatement("select * from users where id = ?"))
-        {
-            ps.setString(1, id);
-            try(ResultSet rs = ps.executeQuery()) {
-                User user = null;
-                if (rs.next()) {
-                    user = new User();
-                    user.setId(rs.getString("id"));
-                    user.setName(rs.getString("name"));
-                    user.setPassword(rs.getString("password"));
-                }
-                if (user == null) throw new EmptyResultDataAccessException(1);
-                return user;
-            }
-        }
+//    public User get(String id) throws ClassNotFoundException, SQLException {
+//        try(Connection c = dataSource.getConnection();
+//            PreparedStatement ps = c.prepareStatement("select * from users where id = ?"))
+//        {
+//            ps.setString(1, id);
+//            try(ResultSet rs = ps.executeQuery()) {
+//                User user = null;
+//                if (rs.next()) {
+//                    user = new User();
+//                    user.setId(rs.getString("id"));
+//                    user.setName(rs.getString("name"));
+//                    user.setPassword(rs.getString("password"));
+//                }
+//                if (user == null) throw new EmptyResultDataAccessException(1);
+//                return user;
+//            }
+//        }
+//    }
+
+    public User get(String id){
+        return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+                new Object[]{id}, this.userMapper);
+    }
+
+    public List<User> getAll(){
+        return this.jdbcTemplate.query("select * from users order by id",
+                this.userMapper);
     }
 
     
@@ -78,14 +102,14 @@ public class UserDao {
 //        this.jdbcTemplate.update("delete from users");
     }
 
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
-        try(Connection c = dataSource.getConnection())
-        {
-            try(PreparedStatement ps = stmt.makePreparedStatement(c)) {
-                ps.executeUpdate();
-            }
-        }
-    }
+//    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+//        try(Connection c = dataSource.getConnection())
+//        {
+//            try(PreparedStatement ps = stmt.makePreparedStatement(c)) {
+//                ps.executeUpdate();
+//            }
+//        }
+//    }
 
 //    public int getCount() throws SQLException {
 //        try (Connection c = dataSource.getConnection();

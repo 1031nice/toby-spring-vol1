@@ -402,3 +402,7 @@ Calculator 클래스와 메소드는 데이터를 가져와 계산한다는
 스프링이 제공하는 템플릿/콜백 기술을 살펴보자.
 스프링이 제공하는 JDBC 코드용 기본 템플릿은 JdbcTemplate이다.
 JdbcContext는 버리고 JdbcTemplate으로 바꿔보자.
+
+20.9.11.
+
+3장 끝.
