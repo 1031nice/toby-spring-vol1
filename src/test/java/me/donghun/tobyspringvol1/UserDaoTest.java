@@ -2,6 +2,7 @@ package me.donghun.tobyspringvol1;
 
 import me.donghun.tobyspringvol1.user.dao.DaoFactory;
 import me.donghun.tobyspringvol1.user.dao.UserDao;
+import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,9 +40,9 @@ public class UserDaoTest {
     public void setUp(){
         System.out.println(this.context); // context는 항상 동일
         System.out.println(this); // UserDaoTest 객체는 매번 다름
-        this.user1 = new User("user1", "name1", "pass1");
-        this.user2 = new User("user2", "name2", "pass2");
-        this.user3 = new User("user3", "name3", "pass3");
+        this.user1 = new User("user1", "name1", "pass1", Level.BASIC, 1, 0);
+        this.user2 = new User("user2", "name2", "pass2", Level.SILVER, 55, 10);
+        this.user3 = new User("user3", "name3", "pass3", Level.GOLD, 100, 40);
     }
 
     /*
@@ -59,13 +60,19 @@ public class UserDaoTest {
         assertThat(dao.getCount(), is(2));
 
         User userget1 = dao.get(user1.getId());
-        assertThat(user1.getName(), is(userget1.getName()));
-        assertThat(user1.getPassword(), is(userget1.getPassword()));
+        checkSameUser(userget1, user1);
 
         User userget2 = dao.get(user2.getId());
-        assertThat(user2.getName(), is(userget2.getName()));
-        assertThat(user2.getPassword(), is(userget2.getPassword()));
+        checkSameUser(userget2, user2);
+    }
 
+    public void checkSameUser(User user1, User user2){
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
     }
 
     @Test

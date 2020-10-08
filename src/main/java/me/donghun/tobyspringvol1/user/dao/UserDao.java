@@ -1,5 +1,6 @@
 package me.donghun.tobyspringvol1.user.dao;
 
+import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,7 +25,10 @@ public class UserDao {
                 User user = new User();
                 user.setId(resultSet.getString("id"));
                 user.setName(resultSet.getString("name"));
-                user.setId(resultSet.getString("password"));
+                user.setPassword(resultSet.getString("password"));
+                user.setLevel(Level.valueOf(resultSet.getInt("level")));
+                user.setLogin(resultSet.getInt("login"));
+                user.setRecommend(resultSet.getInt("recommend"));
                 return user;
             }
         };
@@ -52,8 +56,8 @@ public class UserDao {
 //    }
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
-        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
-                user.getId(), user.getName(), user.getPassword());
+        this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
 //    public User get(String id) throws ClassNotFoundException, SQLException {
@@ -90,7 +94,7 @@ public class UserDao {
 //        this.jdbcContext.executeSql("delete from users");
 //    }
 
-    public void deleteAll() throws SQLException {
+    public void deleteAll() {
         this.jdbcTemplate.update(
                 new PreparedStatementCreator() {
                     @Override
