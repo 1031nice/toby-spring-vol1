@@ -15,8 +15,12 @@
 <!--        <property name="jdbcTemplate" ref="org.springframework.jdbc.core.JdbcTemplate" />-->
     </bean>
 
+    <bean id="userLevelUpgradePolicy" class="me.donghun.tobyspringvol1.user.service.UserLevelDefaultPolicy"/>
+<!--    <bean id="userLevelUpgradePolicy" class="me.donghun.tobyspringvol1.user.service.UserLevelHalfEventPolicy"/>-->
+
     <bean id="userService" class="me.donghun.tobyspringvol1.user.service.UserService">
         <property name="userDao" ref="userDao"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
     </bean>
 
     <bean id="jdbcContext" class="me.donghun.tobyspringvol1.user.dao.JdbcContext">

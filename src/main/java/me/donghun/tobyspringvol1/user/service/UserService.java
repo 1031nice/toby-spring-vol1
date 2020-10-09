@@ -10,7 +10,7 @@ import java.util.List;
 public class UserService {
 
     UserDao userDao;
-    UserLevelUpgradePolicy upgradePolicy;
+    UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
@@ -19,11 +19,15 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
+        this.userLevelUpgradePolicy = userLevelUpgradePolicy;
+    }
+
     public void upgradeLevels(){
         List<User> users = userDao.getAll();
         for(User user : users) {
-            if (upgradePolicy.canUpgradeLevel(user)) {
-                upgradePolicy.upgradeLevel(user);
+            if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
+                userLevelUpgradePolicy.upgradeLevel(user);
                 userDao.update(user);
             }
         }

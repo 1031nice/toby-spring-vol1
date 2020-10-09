@@ -27,17 +27,41 @@ public class UserServiceTest {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    UserLevelUpgradePolicy userLevelUpgradePolicy;
+
     List<User> users;
+    boolean eventTest;
 
     @Before
     public void setUp(){
-        users = Arrays.asList(
-                new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0),
-                new User("user2", "name2", "pass2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-                new User("user3", "name3", "pass3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD-1),
-                new User("user4", "name4", "pass4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                new User("user5", "name5", "pass5", Level.GOLD, 100, Integer.MAX_VALUE)
-        );
+        System.out.println(userLevelUpgradePolicy.getClass());
+        if(userLevelUpgradePolicy.getClass()==(UserLevelDefaultPolicy.class)) {
+            eventTest = false;
+            System.out.println("no event");
+        }
+        else {
+            eventTest = true;
+            System.out.println("event");
+        }
+        if(!eventTest) {
+            users = Arrays.asList(
+                    new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                    new User("user2", "name2", "pass2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+                    new User("user3", "name3", "pass3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                    new User("user4", "name4", "pass4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                    new User("user5", "name5", "pass5", Level.GOLD, 100, Integer.MAX_VALUE)
+            );
+        }
+        else {
+            users = Arrays.asList(
+                    new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2 - 1, 0),
+                    new User("user2", "name2", "pass2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2, 0),
+                    new User("user3", "name3", "pass3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2 - 1),
+                    new User("user4", "name4", "pass4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2),
+                    new User("user5", "name5", "pass5", Level.GOLD, 100, Integer.MAX_VALUE)
+            );
+        }
     }
 
     @Test
@@ -57,7 +81,7 @@ public class UserServiceTest {
     private void checkLevel(User user, boolean upgraded){
         User userUpdate = userDao.get(user.getId());
         if(upgraded)
-            assertThat(userUpdate).isEqualTo(user.getLevel().nextLevel());
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
         else
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
     }
