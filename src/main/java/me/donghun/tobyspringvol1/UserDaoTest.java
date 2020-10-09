@@ -12,8 +12,7 @@ import java.sql.SQLException;
 public class UserDaoTest {
 
     public static void main() throws SQLException, ClassNotFoundException {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-//        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         // UserDao를 가져오는 메소드는 하나뿐인데 왜 굳이 이름을 사용할까?
         // 빈은 클래스가 아니라 객체이다. 따라서 같은 클래스라도 여러 개의 객체가 IoC 컨테이너에 담길 수 있다.
         // 생성 방식 또는 구성이 다른 UserDao 객체가 추가될 수 있으므로 이름을 사용한다.

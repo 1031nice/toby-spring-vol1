@@ -29,9 +29,4 @@ public class DaoFactory {
         return dataSource;
     }
 
-    @Bean
-    public ConnectionMaker connectionMaker(){
-        return new KakaoConnectionMaker();
-    }
-
 }
