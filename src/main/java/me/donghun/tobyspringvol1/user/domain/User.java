@@ -68,4 +68,16 @@ public class User {
     public void setRecommend(int recommend) {
         this.recommend = recommend;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", level=" + level +
+                ", login=" + login +
+                ", recommend=" + recommend +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package me.donghun.tobyspringvol1.user.dao;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -55,7 +56,7 @@ public class UserDao {
 //        );
 //    }
 
-    public void add(final User user) throws ClassNotFoundException, SQLException {
+    public void add(final User user) throws DuplicateKeyException {
         this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
@@ -140,4 +141,15 @@ public class UserDao {
         //        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
     }
 
+    public void update(User user) {
+        this.jdbcTemplate.update(
+                "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?",
+                user.getName(),
+                user.getPassword(),
+                user.getLevel().intValue(),
+                user.getLogin(),
+                user.getRecommend(),
+                user.getId()
+        );
+    }
 }

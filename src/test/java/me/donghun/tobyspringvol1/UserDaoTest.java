@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -50,6 +51,29 @@ public class UserDaoTest {
     -> 각 테스트가 서로 영향을 주지 않고 독립적으로 실행됨을 보장하기 위함
     -> 인스턴스 변수도 부담 없이 사용 가능
      */
+
+    @Test
+    public void update() {
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user2);
+
+        user1.setName("강동훈");
+        user1.setPassword("1031");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        checkSameUser(user1, user1update);
+        // 수정하지 않은 사용자의 정보가 그대로인지도 테스트
+        // where 절이 빠지면 모든 데이터가 update되기 때문
+        User user2update = dao.get(user2.getId());
+        checkSameUser(user2, user2update);
+    }
+
     @Test
     public void andAndGet() throws SQLException, ClassNotFoundException {
         dao.deleteAll();
