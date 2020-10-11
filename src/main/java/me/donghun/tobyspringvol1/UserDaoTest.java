@@ -4,7 +4,6 @@ import me.donghun.tobyspringvol1.user.dao.DaoFactory;
 import me.donghun.tobyspringvol1.user.dao.UserDao;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
@@ -29,7 +28,7 @@ public class UserDaoTest {
 
 //        System.out.println(user.getId() + " 등록 성공");
 
-        User user2 = dao.get("donghun");
+        User user2 = dao.get(, "donghun");
 
         if(!user.getName().equals(user2.getName())){
             System.out.println("테스트 실패 (name)");

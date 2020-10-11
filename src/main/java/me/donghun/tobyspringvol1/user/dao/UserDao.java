@@ -4,7 +4,6 @@ import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -56,7 +55,7 @@ public class UserDao {
 //        );
 //    }
 
-    public void add(final User user) throws DuplicateKeyException {
+    public void add(Connection c, final User user) throws DuplicateKeyException {
         this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
@@ -80,7 +79,7 @@ public class UserDao {
 //        }
 //    }
 
-    public User get(String id){
+    public User get(Connection c, String id){
         return this.jdbcTemplate.queryForObject("select * from users where id = ?",
                 new Object[]{id}, this.userMapper);
     }
@@ -141,7 +140,7 @@ public class UserDao {
         //        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
     }
 
-    public void update(User user) {
+    public void update(Connection c, User user) {
         this.jdbcTemplate.update(
                 "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?",
                 user.getName(),

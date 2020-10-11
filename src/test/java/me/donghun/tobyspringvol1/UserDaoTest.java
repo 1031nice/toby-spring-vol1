@@ -1,6 +1,5 @@
 package me.donghun.tobyspringvol1;
 
-import me.donghun.tobyspringvol1.user.dao.DaoFactory;
 import me.donghun.tobyspringvol1.user.dao.UserDao;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
@@ -9,13 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -56,21 +53,21 @@ public class UserDaoTest {
     public void update() {
         dao.deleteAll();
 
-        dao.add(user1);
-        dao.add(user2);
+        dao.add(, user1);
+        dao.add(, user2);
 
         user1.setName("강동훈");
         user1.setPassword("1031");
         user1.setLevel(Level.GOLD);
         user1.setLogin(1000);
         user1.setRecommend(999);
-        dao.update(user1);
+        dao.update(, user1);
 
-        User user1update = dao.get(user1.getId());
+        User user1update = dao.get(, user1.getId());
         checkSameUser(user1, user1update);
         // 수정하지 않은 사용자의 정보가 그대로인지도 테스트
         // where 절이 빠지면 모든 데이터가 update되기 때문
-        User user2update = dao.get(user2.getId());
+        User user2update = dao.get(, user2.getId());
         checkSameUser(user2, user2update);
     }
 
@@ -79,14 +76,14 @@ public class UserDaoTest {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
-        dao.add(user1);
-        dao.add(user2);
+        dao.add(, user1);
+        dao.add(, user2);
         assertThat(dao.getCount(), is(2));
 
-        User userget1 = dao.get(user1.getId());
+        User userget1 = dao.get(, user1.getId());
         checkSameUser(userget1, user1);
 
-        User userget2 = dao.get(user2.getId());
+        User userget2 = dao.get(, user2.getId());
         checkSameUser(userget2, user2);
     }
 
@@ -104,13 +101,13 @@ public class UserDaoTest {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
-        dao.add(user1);
+        dao.add(, user1);
         assertThat(dao.getCount(), is(1));
 
-        dao.add(user2);
+        dao.add(, user2);
         assertThat(dao.getCount(), is(2));
 
-        dao.add(user3);
+        dao.add(, user3);
         assertThat(dao.getCount(), is(3));
     }
 
@@ -119,6 +116,6 @@ public class UserDaoTest {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
-        dao.get("unknown_id");
+        dao.get(, "unknown_id");
     }
 }

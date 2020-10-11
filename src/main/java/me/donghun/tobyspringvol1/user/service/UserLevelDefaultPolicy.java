@@ -1,8 +1,9 @@
 package me.donghun.tobyspringvol1.user.service;
 
-import me.donghun.tobyspringvol1.user.dao.UserDao;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
+
+import java.sql.Connection;
 
 import static me.donghun.tobyspringvol1.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 import static me.donghun.tobyspringvol1.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
@@ -10,7 +11,7 @@ import static me.donghun.tobyspringvol1.user.service.UserService.MIN_RECOMMEND_F
 public class UserLevelDefaultPolicy implements UserLevelUpgradePolicy {
 
     @Override
-    public void upgradeLevel(User user) {
+    public void upgradeLevel(Connection c, User user) {
         user.upgradeLevel();
     }
 

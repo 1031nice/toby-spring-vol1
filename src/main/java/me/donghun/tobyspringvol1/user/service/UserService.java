@@ -3,7 +3,6 @@ package me.donghun.tobyspringvol1.user.service;
 import me.donghun.tobyspringvol1.user.dao.UserDao;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -27,15 +26,15 @@ public class UserService {
         List<User> users = userDao.getAll();
         for(User user : users) {
             if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
-                userLevelUpgradePolicy.upgradeLevel(user);
-                userDao.update(user);
+                userLevelUpgradePolicy.upgradeLevel(, user);
+                userDao.update(, user);
             }
         }
     }
 
     public void add(User user){
         if(user.getLevel() == null) user.setLevel(Level.BASIC);
-        userDao.add(user);
+        userDao.add(, user);
     }
 
 }
