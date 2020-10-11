@@ -507,3 +507,16 @@ Dao 메소드의 Connection 인자를 받게하여
 - UserService에 Connection 파라미터가 추가되어야 한다.
 - UserDao의 메소드에도 Connection 파라미터가 추가되므로 더 이상 데이터 액세스 기술에 독립적일 수 없다.
 - 테스트 코드도 수정해야 한다.
+
+지금까지 만든 깔끔한 코드를 유지한 채로 트랜잭션 기능을 가져가기 위해
+스프링이 제공하는 트랜잭션 동기화 방식을 사용해본다.
+
+#### Transaction synchronization
+
+Connection 객체를 특별한 저장소에 보관해두고,
+이후 호출되는 DAO의 메소드에서는 저장된 Connection을
+가져다가 사용하게 하는 것이다.
+정확히는 DAO가 사용하는 Jdbctemplate이
+트랜잭션 동기화 방식을 이용하는 것이다.
+트랜잭션이 모두 종료되면, 그때는 동기화를 마치면 된다.
+

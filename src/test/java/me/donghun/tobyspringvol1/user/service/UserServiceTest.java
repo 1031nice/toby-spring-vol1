@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,15 +29,9 @@ public class UserServiceTest {
             this.id = id;
         }
         @Override
-        public void upgradeLevels(){
-            List<User> users = userDao.getAll();
-            for(User user : users) {
-                if(user.getId().equals(this.id)) throw new TestUserServiceException();
-                if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
-                    userLevelUpgradePolicy.upgradeLevel(, user);
-                    userDao.update(, user);
-                }
-            }
+        public void upgradeLevel(User user){
+            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
         }
     }
 
@@ -49,22 +44,25 @@ public class UserServiceTest {
     UserDao userDao;
 
     @Autowired
-    UserLevelUpgradePolicy userLevelUpgradePolicy;
+    DataSource dataSource;
+
+//    @Autowired
+//    UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     List<User> users;
-    boolean eventTest;
+    boolean eventTest = false;
 
     @Before
     public void setUp(){
-        System.out.println(userLevelUpgradePolicy.getClass());
-        if(userLevelUpgradePolicy.getClass()==(UserLevelDefaultPolicy.class)) {
-            eventTest = false;
-            System.out.println("no event");
-        }
-        else {
-            eventTest = true;
-            System.out.println("event");
-        }
+//        System.out.println(userLevelUpgradePolicy.getClass());
+//        if(userLevelUpgradePolicy.getClass()==(UserLevelDefaultPolicy.class)) {
+//            eventTest = false;
+//            System.out.println("no event");
+//        }
+//        else {
+//            eventTest = true;
+//            System.out.println("event");
+//        }
         if(!eventTest) {
             users = Arrays.asList(
                     new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
@@ -86,14 +84,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeAllOrNothing() {
+    public void upgradeAllOrNothing() throws Exception {
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         // 수동 DI
         testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(new UserLevelDefaultPolicy());
+        testUserService.setDataSource(this.dataSource);
 
         userDao.deleteAll();
-        for(User user : users) userDao.add(, user);
+        for(User user : users) userDao.add(user);
 
         try{
             testUserService.upgradeLevels();
@@ -105,9 +104,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels(){
+    public void upgradeLevels() throws Exception {
         userDao.deleteAll();
-        for(User user : users) userDao.add(, user);
+        for(User user : users) userDao.add(user);
 
         userService.upgradeLevels();
 
@@ -119,7 +118,7 @@ public class UserServiceTest {
     }
 
     private void checkLevel(User user, boolean upgraded){
-        User userUpdate = userDao.get(, user.getId());
+        User userUpdate = userDao.get(user.getId());
         if(upgraded)
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
         else
@@ -137,8 +136,8 @@ public class UserServiceTest {
         userService.add(userWithLevel);
         userService.add(userWithoutLevel);
 
-        User userWithLevelRead = userDao.get(, userWithLevel.getId());
-        User userWithoutLevelRead = userDao.get(, userWithoutLevel.getId());
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
 
         assertThat(userWithLevelRead.getLevel()).isEqualTo(userWithLevel.getLevel());
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
