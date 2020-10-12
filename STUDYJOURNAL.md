@@ -520,3 +520,21 @@ Connection 객체를 특별한 저장소에 보관해두고,
 트랜잭션 동기화 방식을 이용하는 것이다.
 트랜잭션이 모두 종료되면, 그때는 동기화를 마치면 된다.
 
+20.10.12.
+
+원래 UserService는 UserDao 인터페이스에만 의존하는 구조였다.
+그런데 UserService가 트랜잭션의 경계 설정을 해야 할 필요가 생기면서
+특정 데이터 액세스 기술에 종속되는 구조가 되고 말았다.
+HIbernate, JPA, JDO, JTA ... 다른 기술을 사용하면
+UserService의 코드도 수정해줘야 하는 상황이다.
+하지만 트랜잭션 경계설정을 담당하는 코드는 일정한 패턴을 가지므로
+추상화를 이용하여 UserService가 DAO 기술로부터
+독립되도록 해보자.
+
+#### 스프링의 트랜잭션 서비스 추상화
+
+스프링에서 제공하는 PlatformTransactionManager는
+트랜잭션 서비스에 대한 추상화를 제공한다.
+따라서 UserService에서 PlatformTransactionManager를
+DI 받아 사용하게 만든다면 DAO가 바뀌더라도
+UserService의 코드를 수정할 필요가 없다. 

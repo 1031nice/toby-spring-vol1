@@ -20,8 +20,11 @@
 
     <bean id="userService" class="me.donghun.tobyspringvol1.user.service.UserService">
         <property name="userDao" ref="userDao"/>
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-<!--        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>-->
     </bean>
 
     <bean id="jdbcContext" class="me.donghun.tobyspringvol1.user.dao.JdbcContext">

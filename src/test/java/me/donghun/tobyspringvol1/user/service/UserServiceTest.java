@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -46,8 +47,8 @@ public class UserServiceTest {
     @Autowired
     DataSource dataSource;
 
-//    @Autowired
-//    UserLevelUpgradePolicy userLevelUpgradePolicy;
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     List<User> users;
     boolean eventTest = false;
@@ -88,8 +89,7 @@ public class UserServiceTest {
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         // 수동 DI
         testUserService.setUserDao(this.userDao);
-        testUserService.setUserLevelUpgradePolicy(new UserLevelDefaultPolicy());
-        testUserService.setDataSource(this.dataSource);
+        testUserService.setTransactionManager(transactionManager);
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
