@@ -66,20 +66,20 @@ public class UserServiceTest {
 //        }
         if(!eventTest) {
             users = Arrays.asList(
-                    new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
-                    new User("user2", "name2", "pass2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-                    new User("user3", "name3", "pass3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
-                    new User("user4", "name4", "pass4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                    new User("user5", "name5", "pass5", Level.GOLD, 100, Integer.MAX_VALUE)
+                    new User("user1", "name1", "pass1", "user1@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                    new User("user2", "name2", "pass2", "user2@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+                    new User("user3", "name3", "pass3", "user3@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                    new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                    new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
             );
         }
         else {
             users = Arrays.asList(
-                    new User("user1", "name1", "pass1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2 - 1, 0),
-                    new User("user2", "name2", "pass2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2, 0),
-                    new User("user3", "name3", "pass3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2 - 1),
-                    new User("user4", "name4", "pass4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2),
-                    new User("user5", "name5", "pass5", Level.GOLD, 100, Integer.MAX_VALUE)
+                    new User("user1", "name1", "pass1", "user1@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2 - 1, 0),
+                    new User("user2", "name2", "pass2", "user2@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2, 0),
+                    new User("user3", "name3", "pass3", "user3@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2 - 1),
+                    new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2),
+                    new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
             );
         }
     }

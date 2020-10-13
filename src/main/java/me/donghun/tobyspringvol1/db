@@ -1,9 +1,21 @@
-docker run -p 3306:3306 --name mysql_boot -e MYSQL_ROOT_PASSWORD=1 -e MYSQL_DATABASE=springboot -e MYSQL_USER=donghun -e MYSQL_PASSWORD=pass -d mysql
-docker exec -i -t mysql_boot bash
-mysql -u donghun -p
+docker run -p 3306:3306 --name toby -e MYSQL_ROOT_PASSWORD=1 -e MYSQL_DATABASE=toby -e MYSQL_USER=donghun -e MYSQL_PASSWORD=pass -d mysql
+
+docker exec -it toby bash
+
+mysql -u root -p
+1
 
 create table users(
-    id varchar(10) primary key,
-    name varchar(20) not null,
-    password varchar(10) not null
+    Id varchar(10) primary key,
+    Name varchar(20) not null,
+    Password varchar(10) not null
 );
+
+alter table users add Email varchar(255);
+
+insert into {table_name}
+values ({value1}, {value2}, {value3}, ...);
+
+update {table_name}
+set {column1} = {value1}, {column2} = {value2}, ...
+where {condition};

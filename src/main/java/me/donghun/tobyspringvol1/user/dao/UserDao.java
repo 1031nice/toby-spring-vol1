@@ -27,6 +27,7 @@ public class UserDao {
                 user.setId(resultSet.getString("id"));
                 user.setName(resultSet.getString("name"));
                 user.setPassword(resultSet.getString("password"));
+                user.setEmail(resultSet.getString("email"));
                 user.setLevel(Level.valueOf(resultSet.getInt("level")));
                 user.setLogin(resultSet.getInt("login"));
                 user.setRecommend(resultSet.getInt("recommend"));
@@ -57,8 +58,8 @@ public class UserDao {
 //    }
 
     public void add(final User user) throws DuplicateKeyException {
-        this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
-                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+        this.jdbcTemplate.update("insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
 //    public User get(String id) throws ClassNotFoundException, SQLException {
@@ -143,9 +144,10 @@ public class UserDao {
 
     public void update(User user) {
         this.jdbcTemplate.update(
-                "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?",
+                "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?",
                 user.getName(),
                 user.getPassword(),
+                user.getEmail(),
                 user.getLevel().intValue(),
                 user.getLogin(),
                 user.getRecommend(),
