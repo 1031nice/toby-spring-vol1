@@ -570,3 +570,21 @@ UserService가 사용자 관리라는 하나의 책임만을 갖게 되었다.
 2. 업그레이드 작업을 담은 UserService의 upgradeLevel 메소드에
 메일 발송 기능을 추가한다.
 
+User에 email field를 추가했다.
+
+UserService에 JavaMail API를 사용하는 sendUpgradeEmail 메소드를 추가했다.
+upgradeLevel 메소드에서 sendUpgradeEmail 메소드를 사용할 것이다.
+
+메일 서비스 기능을 테스트를 작성하려고 할 때 몇 가지 문제가 있다.
+- SMTP 메일 서버가 준비되어 있어야 테스트를 할 수 있다.
+- 메일 발송이란 매우 부하가 큰 작업이다.
+
+SMTP라는 표준 메일 발송 프로토콜로
+메일 서버에 요청이 전달되기만 하면 메일이 발송될거라 믿고,
+실제 메일 서버가 아닌 테스트용으로 따로 준비한
+메일 서버를 사용해 테스트할 수 있지 않을까?
+같은 원리로 JavaMail도 표준 기술로 이미 검증된
+안정적인 모듈이므로 JavaMail을 직접 구동(부하가 매우 큼)시키지 말고
+JavaMail API를 통해 요청이 들어간다는 보장만 받는 식으로
+테스트할 수 있지 않을까?
+
