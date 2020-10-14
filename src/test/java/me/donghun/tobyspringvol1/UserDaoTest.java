@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.sql.SQLException;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
@@ -78,11 +78,11 @@ public class UserDaoTest {
     @Test
     public void andAndGet() throws SQLException, ClassNotFoundException {
         dao.deleteAll();
-        assertThat(dao.getCount(), is(0));
+        assertThat(dao.getCount()).isEqualTo(0);
 
         dao.add(user1);
         dao.add(user2);
-        assertThat(dao.getCount(), is(2));
+        assertThat(dao.getCount()).isEqualTo(2);
 
         User userget1 = dao.get(user1.getId());
         checkSameUser(userget1, user1);
@@ -92,34 +92,34 @@ public class UserDaoTest {
     }
 
     public void checkSameUser(User user1, User user2){
-        assertThat(user1.getId(), is(user2.getId()));
-        assertThat(user1.getName(), is(user2.getName()));
-        assertThat(user1.getPassword(), is(user2.getPassword()));
-        assertThat(user1.getEmail(), is(user2.getEmail()));
-        assertThat(user1.getLevel(), is(user2.getLevel()));
-        assertThat(user1.getLogin(), is(user2.getLogin()));
-        assertThat(user1.getRecommend(), is(user2.getRecommend()));
+        assertThat(user1.getId()).isEqualTo(user2.getId());
+        assertThat(user1.getName()).isEqualTo(user2.getName());
+        assertThat(user1.getPassword()).isEqualTo(user2.getPassword());
+        assertThat(user1.getEmail()).isEqualTo(user2.getEmail());
+        assertThat(user1.getLevel()).isEqualTo(user2.getLevel());
+        assertThat(user1.getLogin()).isEqualTo(user2.getLogin());
+        assertThat(user1.getRecommend()).isEqualTo(user2.getRecommend());
     }
 
     @Test
     public void count() throws SQLException, ClassNotFoundException {
         dao.deleteAll();
-        assertThat(dao.getCount(), is(0));
+        assertThat(dao.getCount()).isEqualTo(0);
 
         dao.add(user1);
-        assertThat(dao.getCount(), is(1));
+        assertThat(dao.getCount()).isEqualTo(1);
 
         dao.add(user2);
-        assertThat(dao.getCount(), is(2));
+        assertThat(dao.getCount()).isEqualTo(2);
 
         dao.add(user3);
-        assertThat(dao.getCount(), is(3));
+        assertThat(dao.getCount()).isEqualTo(3);
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException, ClassNotFoundException {
         dao.deleteAll();
-        assertThat(dao.getCount(), is(0));
+        assertThat(dao.getCount()).isEqualTo(0);
 
         dao.get("unknown_id");
     }
