@@ -7,12 +7,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +41,24 @@ public class UserServiceTest {
         }
     }
 
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests(){
+            return requests;
+        }
+
+        @Override
+        public void send(SimpleMailMessage mailMessage) throws MailException {
+            requests.add(mailMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... mailMessages) throws MailException {
+
+        }
+    }
+
     static class TestUserServiceException extends RuntimeException {}
 
     @Autowired
@@ -55,37 +77,16 @@ public class UserServiceTest {
     MailSender mailSender;
 
     List<User> users;
-    boolean eventTest = false;
 
     @Before
     public void setUp(){
-//        System.out.println(userLevelUpgradePolicy.getClass());
-//        if(userLevelUpgradePolicy.getClass()==(UserLevelDefaultPolicy.class)) {
-//            eventTest = false;
-//            System.out.println("no event");
-//        }
-//        else {
-//            eventTest = true;
-//            System.out.println("event");
-//        }
-        if(!eventTest) {
-            users = Arrays.asList(
-                    new User("user1", "name1", "pass1", "user1@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
-                    new User("user2", "name2", "pass2", "user2@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-                    new User("user3", "name3", "pass3", "user3@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
-                    new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                    new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
-            );
-        }
-        else {
-            users = Arrays.asList(
-                    new User("user1", "name1", "pass1", "user1@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2 - 1, 0),
-                    new User("user2", "name2", "pass2", "user2@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER / 2, 0),
-                    new User("user3", "name3", "pass3", "user3@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2 - 1),
-                    new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD / 2),
-                    new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
-            );
-        }
+        users = Arrays.asList(
+                new User("user1", "name1", "pass1", "user1@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                new User("user2", "name2", "pass2", "user2@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+                new User("user3", "name3", "pass3", "user3@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
+        );
     }
 
     @Test
@@ -109,9 +110,13 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext // 컨텍스트의 DI 설정을 변경하는 테스트임을 뜻한다
     public void upgradeLevels() throws Exception {
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender); // DI
 
         userService.upgradeLevels();
 
@@ -120,6 +125,11 @@ public class UserServiceTest {
         checkLevel(users.get(2), false);
         checkLevel(users.get(3), true);
         checkLevel(users.get(4), false);
+
+        List<String> requests = mockMailSender.getRequests();
+        assertThat(requests.size()).isEqualTo(2);
+        assertThat(requests.get(0)).isEqualTo(users.get(1).getEmail());
+        assertThat(requests.get(1)).isEqualTo(users.get(3).getEmail());
     }
 
     private void checkLevel(User user, boolean upgraded){
