@@ -3,8 +3,8 @@ package me.donghun.tobyspringvol1.user.service;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 
-import static me.donghun.tobyspringvol1.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static me.donghun.tobyspringvol1.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static me.donghun.tobyspringvol1.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static me.donghun.tobyspringvol1.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 public class UserLevelHalfEventPolicy implements UserLevelUpgradePolicy{
     @Override

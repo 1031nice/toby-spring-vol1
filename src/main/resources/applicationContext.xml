@@ -18,10 +18,14 @@
 <!--    <bean id="userLevelUpgradePolicy" class="me.donghun.tobyspringvol1.user.service.UserLevelDefaultPolicy"/>-->
 <!--    <bean id="userLevelUpgradePolicy" class="me.donghun.tobyspringvol1.user.service.UserLevelHalfEventPolicy"/>-->
 
-    <bean id="userService" class="me.donghun.tobyspringvol1.user.service.UserService">
+    <bean id="userServiceImpl" class="me.donghun.tobyspringvol1.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
-        <property name="transactionManager" ref="transactionManager"/>
         <property name="mailSender" ref="dummyMailSender"/>
+    </bean>
+
+    <bean id="userService" class="me.donghun.tobyspringvol1.user.service.UserServiceTx">
+        <property name="userService" ref="userServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
 <!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->

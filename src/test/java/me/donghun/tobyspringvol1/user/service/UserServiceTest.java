@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.donghun.tobyspringvol1.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static me.donghun.tobyspringvol1.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static me.donghun.tobyspringvol1.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static me.donghun.tobyspringvol1.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
         public TestUserService(String id) {
             this.id = id;
@@ -64,6 +64,11 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
+    // 굳이 구체적인 클래스를 가져온 이유는
+    // 메일 서비스를 테스트할 때 목 오브젝트를 이용해 수동 DI를 적용(수정자 메소드 이용)해야하기 때문이다.
+    @Autowired
+    UserServiceImpl userServiceImpl;
+
     @Autowired
     UserDao userDao;
 
@@ -94,14 +99,17 @@ public class UserServiceTest {
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         // 수동 DI
         testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(transactionManager);
         testUserService.setMailSender(mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try{
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }
         catch (TestUserServiceException e){
@@ -116,7 +124,7 @@ public class UserServiceTest {
         for(User user : users) userDao.add(user);
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender); // DI
+        userServiceImpl.setMailSender(mockMailSender); // DI
 
         userService.upgradeLevels();
 
