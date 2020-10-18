@@ -9,7 +9,7 @@
         <property name="username" value="donghun" />
         <property name="password" value="1234" />
     </bean>
-    <bean id="userDao" class="me.donghun.tobyspringvol1.user.dao.UserDao">
+    <bean id="userDao" class="me.donghun.tobyspringvol1.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
 <!--        <property name="jdbcContext" ref="jdbcContext" />-->
 <!--        <property name="jdbcTemplate" ref="org.springframework.jdbc.core.JdbcTemplate" />-->

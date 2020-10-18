@@ -1,7 +1,6 @@
 package me.donghun.tobyspringvol1;
 
-import me.donghun.tobyspringvol1.user.dao.DaoFactory;
-import me.donghun.tobyspringvol1.user.dao.UserDao;
+import me.donghun.tobyspringvol1.user.dao.UserDaoJdbc;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.junit.Before;
@@ -9,13 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,7 +25,7 @@ public class UserDaoTest {
     private ApplicationContext context;
 
     @Autowired
-    private UserDao dao;
+    private UserDaoJdbc dao;
     private User user1;
     private User user2;
     private User user3;

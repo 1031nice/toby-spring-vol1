@@ -1,6 +1,7 @@
 package me.donghun.tobyspringvol1.user.service;
 
 import me.donghun.tobyspringvol1.user.dao.UserDao;
+import me.donghun.tobyspringvol1.user.dao.UserDaoJdbc;
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.junit.Before;
@@ -59,6 +60,36 @@ public class UserServiceTest {
         }
     }
 
+    static class MockUserDao implements UserDao {
+        private List<User> users;
+        private List<User> updated = new ArrayList<>();
+
+        public MockUserDao(List<User> users) {
+            this.users = users;
+        }
+        public List<User> getUpdated() {
+            return this.updated;
+        }
+        public List<User> getAll(){ // stub
+            return this.users;
+        }
+        public void update(User user){ // mock
+            updated.add(user);
+        }
+        public void deleteAll() {
+            throw new UnsupportedOperationException();
+        }
+        public int getCount() {
+            throw new UnsupportedOperationException();
+        }
+        public void add(User user) {
+            throw new UnsupportedOperationException();
+        }
+        public User get(String id) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     static class TestUserServiceException extends RuntimeException {}
 
     @Autowired
@@ -70,7 +101,7 @@ public class UserServiceTest {
     UserServiceImpl userServiceImpl;
 
     @Autowired
-    UserDao userDao;
+    UserDaoJdbc userDao;
 
     @Autowired
     DataSource dataSource;
@@ -120,24 +151,38 @@ public class UserServiceTest {
     @Test
     @DirtiesContext // 컨텍스트의 DI 설정을 변경하는 테스트임을 뜻한다
     public void upgradeLevels() throws Exception {
-        userDao.deleteAll();
-        for(User user : users) userDao.add(user);
+        // 고립된 테스트에서는 테스트 대상 오브젝트를 직접 생성하면 된다.
+        // 스프링 컨테이너의 도움(DI)을 받을 필요가 없기 때문이다.
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
 
         MockMailSender mockMailSender = new MockMailSender();
         userServiceImpl.setMailSender(mockMailSender); // DI
 
-        userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
-        checkLevel(users.get(0), false);
-        checkLevel(users.get(1), true);
-        checkLevel(users.get(2), false);
-        checkLevel(users.get(3), true);
-        checkLevel(users.get(4), false);
+//        checkLevel(users.get(0), false);
+//        checkLevel(users.get(1), true);
+//        checkLevel(users.get(2), false);
+//        checkLevel(users.get(3), true);
+//        checkLevel(users.get(4), false);
+
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated.size()).isEqualTo(2);
+        checkUserAndLevel(updated.get(0), "user2", Level.SILVER);
+        checkUserAndLevel(updated.get(1), "user4", Level.GOLD);
 
         List<String> requests = mockMailSender.getRequests();
         assertThat(requests.size()).isEqualTo(2);
         assertThat(requests.get(0)).isEqualTo(users.get(1).getEmail());
         assertThat(requests.get(1)).isEqualTo(users.get(3).getEmail());
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+        assertThat(updated.getId()).isEqualTo(expectedId);
+        assertThat(updated.getLevel()).isEqualTo(expectedLevel);
     }
 
     private void checkLevel(User user, boolean upgraded){

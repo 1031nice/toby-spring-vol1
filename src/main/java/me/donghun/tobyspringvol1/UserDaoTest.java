@@ -1,10 +1,9 @@
 package me.donghun.tobyspringvol1;
 
 import me.donghun.tobyspringvol1.user.dao.DaoFactory;
-import me.donghun.tobyspringvol1.user.dao.UserDao;
+import me.donghun.tobyspringvol1.user.dao.UserDaoJdbc;
 import me.donghun.tobyspringvol1.user.domain.User;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
@@ -18,7 +17,7 @@ public class UserDaoTest {
         // 생성 방식 또는 구성이 다른 UserDao 객체가 추가될 수 있으므로 이름을 사용한다.
 //        UserDao userDao = context.getBean("userDao", UserDao.class);
 //        Object userDao = context.getBean("userDao"); // 클래스를 안주면 Object 반환
-        UserDao dao = new DaoFactory().userDao();
+        UserDaoJdbc dao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("donghun");
