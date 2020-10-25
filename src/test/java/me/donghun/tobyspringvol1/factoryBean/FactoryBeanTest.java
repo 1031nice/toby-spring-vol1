@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+// location 지정안하면 default로 blabla-context.xml을 찾는다는데 왜 못찾지?
 @ContextConfiguration(locations = "/FactoryBeanTest-context.xml")
 public class FactoryBeanTest {
     @Autowired
