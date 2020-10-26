@@ -10,9 +10,12 @@ public class Test {
                 new Class[]{Hello.class},
                 new UppercaseHandler(new HelloTarget())
         );
+
         System.out.println(hello.sayHello("donghun"));
         System.out.println(hello.sayHi("donghun"));
         System.out.println(hello.sayThankYou("donghun"));
     }
+
+
 
 }
