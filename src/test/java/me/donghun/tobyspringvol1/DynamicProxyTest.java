@@ -8,6 +8,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.Proxy;
@@ -46,6 +48,23 @@ public class DynamicProxyTest {
             String ret = (String) methodInvocation.proceed();
             return ret.toUpperCase();
         }
+    }
+
+    @Test
+    public void pointcutAdvisor() {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(new HelloTarget());
+
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        assertThat(proxiedHello.sayHello("donghun")).isEqualTo("HELLO DONGHUN");
+        assertThat(proxiedHello.sayHi("donghun")).isEqualTo("HI DONGHUN");
+        assertThat(proxiedHello.sayThankYou("donghun")).isEqualTo("Thank You donghun");
     }
 
 }
