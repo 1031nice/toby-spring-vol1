@@ -789,3 +789,7 @@ ProxyFactoryBean: 프록시를 생성해서 빈 오브젝트로 등록해주는 
 메소드 정보에 더해 타깃 오브젝트가 담긴 MethodInvocation 오브젝트를 ProxyFactoryBean으로부터 제공받는다.
 따라서 MethodInterceptor는 타겟 오브젝트를 직접 알고 있을 필요가 없고,
 타겟이 다른 여러 프록시에서 함게 사용할 수 있고 싱글톤 빈으로 등록이 가능하다.
+
+20.10.27.
+
+이제 ProxyFactoryBean을 적용해보자.
