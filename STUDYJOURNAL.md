@@ -810,3 +810,5 @@ DefaultAdvisorAutoProxyCreator: 어드바이저를 이용한 자동 프록시 �
 20.10.28.
 
 DefaultAdvisorAutoProxyCreator를 적용해보자.
+
+포인트컷 표현식을 적용하고 aop 스키마 전용 태그를 사용해보자.
