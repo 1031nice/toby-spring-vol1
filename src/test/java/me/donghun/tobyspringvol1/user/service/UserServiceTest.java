@@ -36,11 +36,8 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
-        public TestUserService(String id) {
-            this.id = id;
-        }
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "user4";
         @Override
         public void upgradeLevel(User user){
             if(user.getId().equals(this.id)) throw new TestUserServiceException();
@@ -104,10 +101,8 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
-    // 굳이 구체적인 클래스를 가져온 이유는
-    // 메일 서비스를 테스트할 때 목 오브젝트를 이용해 수동 DI를 적용(수정자 메소드 이용)해야하기 때문이다.
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
 
     @Autowired
     UserDaoJdbc userDao;
@@ -135,34 +130,17 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
+    public void advisorAutoProxyCreator(){
+        assertThat(testUserService).isInstanceOf(Proxy.class);
+    }
+
+    @Test
     public void upgradeAllOrNothing() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        // 수동 DI
-        testUserService.setUserDao(this.userDao);
-        testUserService.setMailSender(mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
-//        TransactionHandler txHandler = new TransactionHandler();
-//        txHandler.setTarget(testUserService);
-//        txHandler.setTransactionManager(transactionManager);
-//        txHandler.setPattern("upgradeLevels");
-//        UserService txUserService = (UserService) Proxy.newProxyInstance(
-//                getClass().getClassLoader(), new Class[]{UserService.class}, txHandler
-//        );
-
-//        UserServiceTx txUserService = new UserServiceTx();
-//        txUserService.setTransactionManager(transactionManager);
-//        txUserService.setUserService(testUserService);
-
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try{
-            txUserService.upgradeLevels();
+            this.testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }
         catch (TestUserServiceException e){
