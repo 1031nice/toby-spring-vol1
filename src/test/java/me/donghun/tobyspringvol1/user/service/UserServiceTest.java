@@ -11,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,8 +37,17 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
         private String id = "user4";
+
+        @Override
+        public List<User> getAll() {
+            for(User user : super.getAll()){
+                super.update(user);
+            }
+            return null;
+        }
+
         @Override
         public void upgradeLevel(User user){
             if(user.getId().equals(this.id)) throw new TestUserServiceException();
@@ -127,6 +137,11 @@ public class UserServiceTest {
                 new User("user4", "name4", "pass4", "user4@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
                 new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
+    }
+
+    @Test(expected = TransientDataAccessResourceException.class)
+    public void readOnlyTransactionAttribute() {
+        testUserService.getAll();
     }
 
     @Test
