@@ -19,6 +19,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
@@ -34,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(locations = "/applicationContext.xml") // 테스트를 실행하기 전에 스프링 컨테이너를 초기화
 public class UserServiceTest {
 
     static class TestUserService extends UserServiceImpl {
@@ -138,6 +141,44 @@ public class UserServiceTest {
                 new User("user5", "name5", "pass5", "user5@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
+
+    @Test(expected = TransientDataAccessResourceException.class)
+    public void transactionSyncCommit() {
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        txDefinition.setReadOnly(true); // 트랜잭션의 속성을 read only로 지정
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        userService.deleteAll(); // error 발생. 세 개의 메소드가 앞서만든 하나의 트랜잭션에 묶였음을 증명
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+
+        transactionManager.commit(txStatus);
+    }
+
+    @Test(expected = TransientDataAccessResourceException.class)
+    @Transactional(readOnly = true)
+    public void transactionSyncCommitWithAnnotation() {
+        userService.deleteAll(); // error 발생. 세 개의 메소드가 앞서만든 하나의 트랜잭션에 묶였음을 증명
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+    }
+
+    @Test
+    @Transactional // 메소드 속 모든 동작이 하나의 트랜잭션에서 진행, 기본적으로 강제 롤백
+    public void transactionSyncRollback() {
+        userDao.deleteAll();
+        assertThat(userDao.getCount()).isEqualTo(0);
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+        assertThat(userDao.getCount()).isEqualTo(2);
+    }
+
+    @Test
+    public void getCount2() {
+        // 위의 테스트가 강제 롤백임을 테스트
+        assertThat(userDao.getCount()).isEqualTo(0);
+    }
+
 
     @Test(expected = TransientDataAccessResourceException.class)
     public void readOnlyTransactionAttribute() {
