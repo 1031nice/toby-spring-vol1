@@ -2,6 +2,7 @@ package me.donghun.tobyspringvol1.user.dao;
 
 import me.donghun.tobyspringvol1.user.domain.Level;
 import me.donghun.tobyspringvol1.user.domain.User;
+import me.donghun.tobyspringvol1.user.sqlService.SqlService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,6 +20,13 @@ public class UserDaoJdbc implements UserDao {
 //    private DataSource dataSource;
 //    private JdbcContext jdbcContext;
     private JdbcTemplate jdbcTemplate;
+
+    private SqlService sqlService;
+
+    public void setSqlService(SqlService sqlService) {
+        this.sqlService = sqlService;
+    }
+
     private RowMapper<User> userMapper =
         new RowMapper<User>() {
             @Override
@@ -58,7 +66,7 @@ public class UserDaoJdbc implements UserDao {
 //    }
 
     public void add(final User user) throws DuplicateKeyException {
-        this.jdbcTemplate.update("insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)",
+        this.jdbcTemplate.update(this.sqlService.getSql("userAdd"),
                 user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
@@ -82,12 +90,12 @@ public class UserDaoJdbc implements UserDao {
 //    }
 
     public User get(String id){
-        return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGet"),
                 new Object[]{id}, this.userMapper);
     }
 
     public List<User> getAll(){
-        return this.jdbcTemplate.query("select * from users order by id",
+        return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"),
                 this.userMapper);
     }
 
@@ -97,15 +105,15 @@ public class UserDaoJdbc implements UserDao {
 //    }
 
     public void deleteAll() {
-        this.jdbcTemplate.update(
-                new PreparedStatementCreator() {
-                    @Override
-                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        return connection.prepareStatement("delete from users");
-                    }
-                }
-        );
-//        this.jdbcTemplate.update("delete from users");
+//        this.jdbcTemplate.update(
+//                new PreparedStatementCreator() {
+//                    @Override
+//                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+//                        return connection.prepareStatement("delete from users");
+//                    }
+//                }
+//        );
+        this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
     }
 
 //    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
@@ -127,24 +135,24 @@ public class UserDaoJdbc implements UserDao {
 //        }
 //    }
     public int getCount() {
-        return this.jdbcTemplate.query(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                return connection.prepareStatement("select count(*) from users");
-            }
-        }, new ResultSetExtractor<Integer>() {
-            @Override
-            public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                resultSet.next();
-                return resultSet.getInt(1);
-            }
-        });
-        //        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+//        return this.jdbcTemplate.query(new PreparedStatementCreator() {
+//            @Override
+//            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+//                return connection.prepareStatement("select count(*) from users");
+//            }
+//        }, new ResultSetExtractor<Integer>() {
+//            @Override
+//            public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+//                resultSet.next();
+//                return resultSet.getInt(1);
+//            }
+//        });
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGetCount"), Integer.class);
     }
 
     public void update(User user) {
         this.jdbcTemplate.update(
-                "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?",
+                this.sqlService.getSql("userUpdate"),
                 user.getName(),
                 user.getPassword(),
                 user.getEmail(),

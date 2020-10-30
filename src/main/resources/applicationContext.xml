@@ -17,8 +17,22 @@
     </bean>
     <bean id="userDao" class="me.donghun.tobyspringvol1.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlService" ref="sqlService"/>
 <!--        <property name="jdbcContext" ref="jdbcContext" />-->
 <!--        <property name="jdbcTemplate" ref="org.springframework.jdbc.core.JdbcTemplate" />-->
+    </bean>
+
+    <bean id="sqlService" class="me.donghun.tobyspringvol1.user.sqlService.SimpleSqlService">
+        <property name="sqlMap">
+            <map>
+                <entry key="userAdd" value="insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)"/>
+                <entry key="userGet" value="select * from users where id = ?"/>
+                <entry key="userGetAll" value="select * from users order by id"/>
+                <entry key="userDeleteAll" value="delete from users"/>
+                <entry key="userGetCount" value="select count(*) from users"/>
+                <entry key="userUpdate" value="update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?"/>
+            </map>
+        </property>
     </bean>
 
 <!--    <bean id="userLevelUpgradePolicy" class="me.donghun.tobyspringvol1.user.service.UserLevelDefaultPolicy"/>-->
