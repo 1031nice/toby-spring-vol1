@@ -831,3 +831,19 @@ DefaultAdvisorAutoProxyCreator를 적용해보자.
 
 7장에서는 SQL을 DAO에서 분리하는 작업에 도전한다. SQL 제공 기능을 분리해서 다양한 SQL 정보 소스를 사용할 수 있고,
 운영 중에 동적으로 갱신도 가능한 유연하고 확장성이 뛰어난 SQL 서비스를 만들어보자.
+
+SqlService라는 인터페이스를 만든 뒤 UserDao에서 DI 받도록 수정하였다.
+이제 UserDao를 포함한 모든 DAO는 SQL을 어디에 저장해두고 가져오는지에 대해
+전혀 신경 쓰지 않아도 된다. 구체적인 방법과 기술에 상관없이 SqlService 인터페이스 타입의 빈을 DI 받아서
+필요한 SQL을 가져다 쓰기만 하면 된다.
+
+검색용 키와 SQL 문장 두 가지를 담을 수 있는 간단한 XML 문서를 설계해보고, 이 XML 파일에서
+SQL을 읽어뒀다가 DAO에게 제공해주는 SQL 서비스 구현 클래스를 만들어보자.
+
+#### JAXB
+Java Architecture for XML Binding
+-> 테스트 실패
+
+20.11.3.
+
+토비의 스프링 3.1 vol1 1회독
